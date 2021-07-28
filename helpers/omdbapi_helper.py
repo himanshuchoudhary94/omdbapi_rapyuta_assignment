@@ -28,10 +28,10 @@ def verify_imdbID_uniqueness(data):
         pytest.skip("Movie not found for this search")
 
 
-def verify_contract(data):
+def verify_contract(data, status_code):
     """ This function verifies if contract of the API response is valid or not
     @param data - JSON Response of the API
-    @param statusCode - Status Code of the API response
+    @param status_code - Status Code of the API response
     """
     schema = apiContract.getApi
     if data['Response'] == 'True':
@@ -44,5 +44,7 @@ def verify_contract(data):
                 assert len(myDict) == 0, "failures in contract"
         except jsonschema.ValidationError as e:
             print(e.message)
+    elif status_code not in [200,404]:
+        pytest.xfail("Movie fetch failed")
     else:
         pytest.skip("Movie not found for this search")
